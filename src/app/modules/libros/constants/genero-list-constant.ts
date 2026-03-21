@@ -1,0 +1,17 @@
+export const GENEROS_LIBRO: string[] = [
+    'Ficción', 
+    'No ficción',
+    'Ciencia ficción', 
+    'Fantasia',  
+    'Misterio',  
+    'Romance',
+    'Historico', 
+    'Biografía', 
+    'Autoayuda',  
+    'Infantil', 
+    'Juvenil',  
+    'Poesía', 
+    'Terror',
+    'Aventura',
+    'Ensayo',
+];

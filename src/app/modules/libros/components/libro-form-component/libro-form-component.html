@@ -1,0 +1,87 @@
+<p-dialog
+  [header]="libro() ? 'Editar Libro' : 'Registrar Libro'"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '42rem' }"
+  (onHide)="closeDialog()"
+  [breakpoints]="{ '960px': '85vw', '641px': '95vw' }"
+>
+  <form [formGroup]="libroForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 gap-4 p-2">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-semibold text-gray-700">Título</label>
+        <input pInputText formControlName="titulo" placeholder="Ej. Cien años de soledad" class="w-full" />
+        @if (invalidField('titulo')) {
+          <small class="text-red-500 text-xs">Título requerido (mín. 2).</small>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-semibold text-gray-700">ISBN</label>
+        <input pInputText formControlName="isbn" placeholder="Ej. 978-84-" class="w-full" />
+        @if (invalidField('isbn')) {
+          <small class="text-red-500 text-xs">ISBN requerido.</small>
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label class="text-sm font-semibold text-gray-700">Autores</label>
+      <div class="flex gap-2">
+        <input pInputText type="text" [ngModel]="nuevoAutor()" (ngModelChange)="nuevoAutor.set($event)" 
+               [ngModelOptions]="{standalone: true}" placeholder="Agregar autor" class="flex-1" />
+        <button pButton type="button" label="Agregar" class="bg-blue-600 text-white" (click)="addAutor()"></button>
+      </div>
+      
+      <div class="flex flex-wrap gap-2">
+        @for (autor of libroForm.get('autores')?.value; track $index) {
+          <span class="inline-flex items-center rounded-full bg-slate-200 px-3 py-1 text-xs text-slate-700">
+            {{ autor }}
+            <button type="button" (click)="removeAutor($index)" class="ml-2 text-red-500 hover:text-red-700">×</button>
+          </span>
+        }
+      </div>
+      @if (invalidField('autores')) {
+        <small class="text-red-500 text-xs">Debe tener al menos un autor.</small>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-semibold text-gray-700">Géneros</label>
+      <p-multiSelect formControlName="generos" [options]="generosOptions()" 
+                    optionLabel="label" optionValue="value" 
+                    placeholder="Seleccione géneros" class="w-full" />
+      @if (invalidField('generos')) {
+        <small class="text-red-500 text-xs">Seleccione al menos un género.</small>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-semibold text-gray-700">Descripción</label>
+      <textarea pTextarea formControlName="descripcion" rows="4" class="w-full"></textarea>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-semibold text-gray-700">Fecha de publicación</label>
+        <input type="date" pInputText formControlName="fechaPublicacion" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-semibold text-gray-700">Páginas</label>
+        <input type="number" pInputText formControlName="paginas" class="w-full" />
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <p-checkbox formControlName="disponible" [binary]="true"></p-checkbox>
+      <label class="text-sm font-semibold text-gray-700">Disponible</label>
+    </div>
+
+    <div class="flex justify-end gap-3 border-t pt-4">
+      <button pButton label="Cancelar" type="button" class="p-button-secondary p-button-text" (click)="closeDialog()"></button>
+      <button pButton [label]="libro() ? 'Actualizar' : 'Crear'" type="submit" class="bg-blue-600 border-none"></button>
+    </div>
+
+  </form>
+</p-dialog>

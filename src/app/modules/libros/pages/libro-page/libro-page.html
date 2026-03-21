@@ -1,0 +1,87 @@
+<div class="min-h-screen bg-slate-50 p-4 md:p-8">
+  
+  <header class="max-w-7xl mx-auto mb-8">
+    <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
+          <i class="pi pi-book text-blue-600"></i>
+          Gestión de Libros
+        </h1>
+        <p class="text-slate-500 text-sm">Mostrando {{ libroService.libros().length }} de {{ libroService.filtros().valueSearch ? 'resultados filtrados' : 'tu colección total' }}</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row flex-wrap items-center gap-3">
+        <p-iconField iconPosition="left" class="w-full sm:w-auto">
+          <p-inputIcon styleClass="pi pi-search" />
+          <input 
+            type="text" pInputText 
+            #searchInput
+            placeholder="Buscar..." 
+            class="w-full sm:w-64"
+            [ngModel]="searchTerm()"
+            (input)="onSearch(searchInput.value)" 
+            />
+        </p-iconField>
+
+        <!--<p-select 
+            [options]="orderOptions" 
+            [(ngModel)]="selectedOrder" 
+            (onChange)="onSortChange($event)"
+            optionLabel="label" 
+            dataKey="label" 
+            placeholder="Ordenar por"
+            class="w-full sm:w-48"
+        /> -->
+
+        <button 
+          pButton label="Nuevo Libro" icon="pi pi-plus" 
+          class="bg-blue-600 border-none hover:bg-blue-700 w-full sm:w-auto"
+          (click)="openCreate()">
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      @for (item of libroService.libros(); track item.id) {
+        <app-libro-detail-component 
+          [libro]="item"
+          (edit)="openEdit($event)"
+          (delete)="confirmDelete($event)">
+        </app-libro-detail-component>
+      } @empty {
+        <div class="col-span-full flex flex-col items-center justify-center py-24 bg-white rounded-2xl border-2 border-dashed border-slate-200">
+          <div class="bg-blue-50 p-5 rounded-full mb-4">
+            <i class="pi pi-inbox text-4xl text-blue-300"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-700">No hay libros para mostrar</h3>
+          <p class="text-slate-500 max-w-xs text-center">Parece que no hay coincidencias con tu búsqueda o la lista está vacía.</p>
+          <button pButton label="Limpiar filtros" class="p-button-outlined mt-4 p-button-sm" (click)="onSearch('')"></button>
+        </div>
+      }
+    </div>
+
+    @if (libroService.readAll().length > 0) {
+      <div class="mt-8 bg-white rounded-xl border border-slate-200 p-2 shadow-sm">
+        <p-paginator 
+          [first]="(libroService.filtros().page - 1) * libroService.filtros().pageSize" 
+          [rows]="libroService.filtros().pageSize" 
+          [totalRecords]="(libroService.filtros().valueSearch) ? libroService.libros().length : libroService.readAll().length" 
+          [rowsPerPageOptions]="[8, 12, 24, 48]"
+          (onPageChange)="onPageChange($event)"
+          styleClass="border-none bg-transparent">
+        </p-paginator>
+      </div>
+    }
+  </main>
+
+  <app-libro-form-component
+    [(visible)]="isDialogVisible"
+    [libro]="selectedLibro()"
+    (create)="handleCreate($event)"
+    (update)="handleUpdate($event)">
+  </app-libro-form-component>
+
+  <p-confirmDialog />
+</div>
