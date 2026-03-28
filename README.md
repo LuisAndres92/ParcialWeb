@@ -1,6 +1,6 @@
 # Captura
 
-![Captura del sistema](cap.png)
+![Captura del sistema](Cap.png)
 
 
 # ProyectoWeb
