@@ -13,7 +13,7 @@ export class LibroStore {
     orderColumn: null,
     orderList: null,
     page: 1,
-    pageSize: 10,
+    pageSize: 12,
   });
 
   // Exposición de señales de solo lectura
